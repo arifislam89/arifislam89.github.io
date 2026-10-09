@@ -1,9 +1,9 @@
 /* Minimal service worker: caches the app shell only.
    Member data always comes live from Google Apps Script – never cached. */
-const CACHE = 'shonchoy-shell-v1';
+const CACHE = 'shonchoy-shell-v2';
 const SHELL = ['./', 'index.html', 'manifest.webmanifest',
-  'icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-512.png',
-  'icons/apple-touch-icon.png', 'icons/favicon-64.png'];
+  'icon-192.png', 'icon-512.png', 'maskable-512.png',
+  'apple-touch-icon.png', 'favicon-64.png'];
 
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(SHELL); }).then(function () { return self.skipWaiting(); }));
