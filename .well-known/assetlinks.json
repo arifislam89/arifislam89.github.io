@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.shonchoy.collection",
+        "sha256_cert_fingerprints": ["77:A5:3F:DE:8E:E8:83:B8:E5:EB:DF:E1:88:67:4D:66:F6:FE:61:CC:D1:FA:09:AC:68:F0:2C:86:3E:A9:E3:17"]
+      }
+    }]
