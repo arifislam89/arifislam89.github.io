@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<title>Shonchoy Collection</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f5c47">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Shonchoy">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+  :root{--bg:#f4f1ea;--ink:#1d2a24;--mut:#6b766f;--brand:#0f5c47}
+  @media (prefers-color-scheme:dark){:root{--bg:#101613;--ink:#e9efeb;--mut:#93a39a;--brand:#3fb68b}}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Bengali","Hind Siliguri",sans-serif;overflow:hidden}
+  #app{position:fixed;inset:0;border:0;width:100%;height:100%;background:var(--bg)}
+  .overlay{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:14px;background:var(--bg);text-align:center;padding:24px;z-index:5}
+  .overlay[hidden]{display:none}
+  .overlay img{width:84px;height:84px;border-radius:20px}
+  .spin{width:30px;height:30px;border-radius:50%;border:3px solid var(--mut);border-top-color:var(--brand);animation:s 0.9s linear infinite}
+  @keyframes s{to{transform:rotate(360deg)}}
+  .overlay h1{margin:0;font-size:18px}
+  .overlay p{margin:0;color:var(--mut);font-size:14px;line-height:1.5;max-width:320px}
+  button{margin-top:6px;font:inherit;font-weight:600;border:0;border-radius:12px;padding:11px 22px;background:var(--brand);color:#fff;cursor:pointer}
+</style>
+</head>
+<body>
+
+<iframe id="app" title="Shonchoy Collection" allow="clipboard-write" referrerpolicy="no-referrer"></iframe>
+
+<div id="loading" class="overlay">
+  <img src="icons/icon-192.png" alt="">
+  <div class="spin" aria-label="Loading"></div>
+</div>
+
+<div id="offline" class="overlay" hidden>
+  <img src="icons/icon-192.png" alt="">
+  <h1>ইন্টারনেট সংযোগ নেই</h1>
+  <p>অ্যাপটি চালাতে ইন্টারনেট প্রয়োজন। সংযোগ চালু করে আবার চেষ্টা করুন।</p>
+  <button id="retry">আবার চেষ্টা করুন</button>
+</div>
+
+<script>
+/* ▼▼ আপনার Apps Script Web App লিঙ্ক (…/exec) ▼▼ */
+const APP_URL = "https://script.google.com/macros/s/AKfycby4QYVvHqzvLzXT1K5CDMZ9EbdXzPWCY5lBNUVAd8h4P0f9xsJlyqwM2dlaEiEKI6tQ9Q/exec";
+/* ▲▲ নতুন ভার্সন Deploy করলে লিঙ্ক বদলালে শুধু এই লাইনটা বদলান ▲▲ */
+
+const frame = document.getElementById('app');
+const loading = document.getElementById('loading');
+const offline = document.getElementById('offline');
+let loaded = false, slowTimer = null;
+
+function load() {
+  if (!navigator.onLine) { showOffline(); return; }
+  offline.hidden = true; loading.hidden = false; loaded = false;
+  frame.src = APP_URL;
+  clearTimeout(slowTimer);
+  slowTimer = setTimeout(function () { if (!loaded && !navigator.onLine) showOffline(); }, 15000);
+}
+function showOffline() { loading.hidden = true; offline.hidden = false; }
+
+frame.addEventListener('load', function () {
+  if (!frame.src || frame.src === 'about:blank') return;
+  loaded = true; loading.hidden = true; clearTimeout(slowTimer);
+});
+window.addEventListener('offline', function () { if (!loaded) showOffline(); });
+window.addEventListener('online', function () { if (!loaded) load(); });
+document.getElementById('retry').addEventListener('click', load);
+
+load();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+}
+</script>
+</body>
+</html>
